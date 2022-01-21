@@ -7,29 +7,12 @@ const logs = [
 ];
 
 const reorderLogFiles = (logs) => {
-	// 식별자 뒤에오는 단어들만 반환한다.
-	const body = (s) => s.slice(s.indexOf(" ") + 1);
+	// 식별자를 제외한 Body만 반환하는 함수 생성
+	const getBody = (s) => s.slice(s.indexOf(" ") + 1);
 
-	// number & string 타입 상관없이 숫자이면 true를 반환한다.
-	const isNum = (c) => /\d/.test(c);
-
-	// if body same then compare identifier
 	const compare = (a, b) => {
-		const n = body(a).localeCompare(body(b));
-		if (n !== 0) return n;
-		return a.localeCompare(b);
+		const n = getBody(a).toLocalSpire;
 	};
-
-	const digitLogs = [];
-	const letterLogs = [];
-	for (const log of logs) {
-		if (isNum(body(log))) digitLogs.push(log);
-		else letterLogs.push(log);
-	}
-
-	console.log([...letterLogs.sort(compare), ...digitLogs]);
-
-	return [...letterLogs.sort(compare), ...digitLogs];
 };
 
 reorderLogFiles(logs);
