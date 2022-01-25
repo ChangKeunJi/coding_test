@@ -1,17 +1,33 @@
 const strs = ["eat", "tea", "tan", "ate", "nat", "bat"];
 // Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
 
-var groupAnagrams = function (strs) {
-	for (const el of strs) {
-		// el의 Map을 만든다.
-		const map = new Map();
+const compareMaps = (map1, map2) => {
+	for (const key in map1) {
+		if (map1[key] !== map2[key]) return false;
+	}
 
-		for (const e of el) {
-			if (map.get(e)) {
-				map[e]++;
-			} else {
-				map.set(e, 1);
-			}
+	return true;
+};
+
+const toMap = (str) => {
+	const map = {};
+	for (const e of str) {
+		if (map[e]) {
+			map[e] = map[e] + 1;
+		} else {
+			map[e] = 1;
+		}
+	}
+
+	return map;
+};
+
+var groupAnagrams = function (strs) {
+	const answer = [];
+
+	for (const el of strs) {
+		const map = toMap(el);
+		for (const e of answer.flat()) {
 		}
 	}
 };
