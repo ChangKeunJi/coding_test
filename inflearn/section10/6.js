@@ -1,62 +1,77 @@
-function solution(m, musicinfos) {
-	let answer = [];
-	m = m.split("");
+function solution(files) {
+	// 대소문자, 숫자, 공백, 마침표, 빼기 / 영문자로 시작 / 숫자 하나 이상 포함
 
-	let infoArr = musicinfos.map((el) => el.split(","));
+	// 1. 문자열을 세 개의 원소로 이루어진 배열로 변환
+	let fileArr = files.map((file) => {
+		let arr = file.split("");
 
-	infoArr = infoArr.map((info) => {
-		return {
-			title: info[2],
-			song: calSong(info[3], calTime(info[0], info[1])),
-			time: calTime(info[0], info[1]),
-		};
-	});
+		let startIndex = [...arr].findIndex((el) => !isNaN(el));
+		let endIndex = [...arr].slice(startIndex).findIndex((el) => isNaN(el));
 
-	infoArr.forEach((info) => {
-		if (info["song"].includes(m)) {
-			answer.push(info["title"]);
-		}
-	});
-
-	// - 두 배열을 비교해서 공통된 부분이 연속되었는지 확인해야...
-	console.log(infoArr);
-	console.log(m);
-	console.log(answer);
-}
-
-function calTime(t1, t2) {
-	let t1Arr = t1.split(":").map((el) => +el);
-	let t2Arr = t2.split(":").map((el) => +el);
-
-	let t1Time = t1Arr[0] * 60 + t1Arr[1];
-	let t2Time = t2Arr[0] * 60 + t2Arr[1];
-
-	return t2Time - t1Time;
-}
-
-function calSong(str, time) {
-	let temp = str.split("");
-	let strArr = [];
-
-	for (let i = 0; i < temp.length; i++) {
-		if (i + 1 < temp.length && temp[i + 1] === "#") {
-			strArr.push(temp[i] + temp[i + 1]);
-			i++;
+		if (endIndex === -1) {
+			return [
+				arr.slice(0, startIndex).join(""),
+				arr.slice(startIndex).join(""),
+			];
 		} else {
-			strArr.push(temp[i]);
+			endIndex += startIndex;
+			return [
+				arr.slice(0, startIndex).join(""),
+				arr.slice(startIndex, endIndex).join(""),
+				arr.slice(endIndex).join(""),
+			];
 		}
-	}
+	});
+	/*
+			[
+				[ 'img', '12', 'png' ],
+				[ 'img', '10', 'png' ],
+				[ 'img', '02', 'png' ],
+				[ 'img', '1', 'png' ],
+				[ 'IMG', '01', 'GIF' ],
+				[ 'img', '2', 'JPG' ]
+			]
+	*/
 
-	let resultArr = [];
-	let q = Math.floor(time / strArr.length);
-	let r = time % strArr.length;
-	if (str.length >= time) {
-		return strArr.slice(0, time);
-	} else {
-		for (let i = 0; i < q; i++) {
-			resultArr = [...resultArr, ...strArr];
+	console.log(fileArr);
+
+	fileArr = fileArr.sort((a, b) => {
+		const [headA, numA] = a;
+		const [headB, numB] = b;
+
+		// HEAD 비교
+		const lowerHeadA = headA.toLowerCase();
+		const lowerHeadB = headB.toLowerCase();
+
+		if (lowerHeadA !== lowerHeadB) {
+			return lowerHeadA.charCodeAt(0) - lowerHeadB.charCodeAt(0);
+		} else {
+			// NUMBER 비교
+			const trimedNumA = +trimString(numA);
+			const trimedNumB = +trimString(numB);
+
+			if (trimedNumA === trimedNumB) {
+				return 0;
+			} else {
+				return trimedNumA - trimedNumB;
+			}
 		}
-	}
+	});
 
-	return [...resultArr, ...strArr.slice(0, r)];
+	console.log(fileArr.map((el) => el.join("")));
+	return fileArr.map((el) => el.join(""));
 }
+
+const trimString = (num) => {
+	let newStr = "";
+
+	for (let i = 0; i < num.length; i++) {
+		if (num[i] === "0") {
+			continue;
+		} else {
+			newStr = num.slice(i);
+			break;
+		}
+	}
+	return newStr;
+};
